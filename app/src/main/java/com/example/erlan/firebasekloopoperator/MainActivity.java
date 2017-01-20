@@ -3,6 +3,8 @@ package com.example.erlan.firebasekloopoperator;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -14,9 +16,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+    private Switch aSwitch;
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
@@ -25,10 +30,15 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String ANONYMOUS = "anonymous";
     private String mUsername;
+    private String userNameForFirebase;
+    List<Character> errorList;
 
     FirebaseDatabase database;
     DatabaseReference myRef;
     private ChildEventListener listener;
+
+//    private ListView mMessageListView;
+//    private MessageAdapter mMessageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +47,14 @@ public class MainActivity extends AppCompatActivity {
         init();
     }
     private void init(){
-        mUsername = ANONYMOUS;
+        //mUsername = ANONYMOUS;
+        userNameForFirebase = ANONYMOUS;
+        errorList = new ArrayList<>();
+        errorList.add('.');
+        errorList.add('#');
+        errorList.add('$');
+        errorList.add('[');
+        errorList.add(']');
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -68,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference().child(branch);
+
+        aSwitch = (Switch) findViewById(R.id.switch1);
+        aSwitch.setOnCheckedChangeListener(this);
+
 
     }
 
@@ -136,11 +157,35 @@ public class MainActivity extends AppCompatActivity {
     private void onSignInInit(FirebaseUser user) {
         attachDatabaseListener();
          mUsername = user.getEmail();
+
+
+        char[] ech = mUsername.toCharArray();
+        StringBuilder username = new StringBuilder();
+        for (char i : ech) {
+            if (!errorList.contains(i)) username.append(i);
+        }
+        userNameForFirebase = username.toString();
     }
 
     private void onSignOutCleanUp() {
         detachDatabaseListener();
-        mUsername = ANONYMOUS;
+        //mUsername = ANONYMOUS;
+        userNameForFirebase =ANONYMOUS;
         // mMessageAdapter.clear();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked){
+            //Toast.makeText(MainActivity.this, "Ready", Toast.LENGTH_SHORT).show();
+            Users user = new Users(mUsername, 0);
+            myRef.child(userNameForFirebase).setValue(user);
+
+        }
+        else {
+            myRef.child(userNameForFirebase).setValue(null);
+
+           // Toast.makeText(MainActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
+        }
     }
 }
