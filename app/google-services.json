@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "314343813414",
+    "firebase_url": "https://fir-kloopoperator.firebaseio.com",
+    "project_id": "fir-kloopoperator",
+    "storage_bucket": "fir-kloopoperator.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314343813414:android:73eae73197761b9b",
+        "android_client_info": {
+          "package_name": "com.example.erlan.firebasekloopoperator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314343813414-f2vn4mv6tp9pq2lpa86ouf1clu8afpj3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.erlan.firebasekloopoperator",
+            "certificate_hash": "A1CD4E30FDEFB35E250C455765D7693ABAC2B05A"
+          }
+        },
+        {
+          "client_id": "314343813414-shukg0oibkbv5lcmcel6jq2dicocuk37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR1nIe6qoe4nnd0ivdxVbEEfNBkYSfk4U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314343813414-shukg0oibkbv5lcmcel6jq2dicocuk37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
