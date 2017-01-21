@@ -1,9 +1,18 @@
 package com.example.erlan.firebasekloopoperator;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -22,6 +31,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private Switch aSwitch;
+    private Button buttonSignOut;
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
@@ -37,8 +47,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     DatabaseReference myRef;
     private ChildEventListener listener;
 
+    ImageView img;
+
 //    private ListView mMessageListView;
-//    private MessageAdapter mMessageAdapter;
+//    private OperatorAdapter mMessageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +60,16 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
     private void init(){
         //mUsername = ANONYMOUS;
+        buttonSignOut = (Button) findViewById(R.id.button2);
+        buttonSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFirebaseAuth.signOut();
+            }
+        });
+
+        img = (ImageView) findViewById(R.id.imageView2);
+
         userNameForFirebase = ANONYMOUS;
         errorList = new ArrayList<>();
         errorList.add('.');
@@ -77,6 +99,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     //User is signed in
                 } else {
                     onSignInInit(mFirebaseUser);
+                    if (mFirebaseUser.getEmail().equals("admin@kloop.kg")){
+                        Toast.makeText(MainActivity.this, "admin", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                        startActivity(intent);
+                    }
                     Toast.makeText(MainActivity.this, "Your are logged in!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -130,7 +157,27 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Users user = dataSnapshot.getValue(Users.class);
+                    if (user.getEmail().equals(mUsername)){
+                        Toast.makeText(MainActivity.this, "Changed", Toast.LENGTH_SHORT).show();
+                        if (user.getStatus()==0){
+                            img.clearAnimation();
+                            img.setBackgroundColor(Color.GREEN);
+                        } else if (user.getStatus() == 1){
+                            img.clearAnimation();
+                            img.setBackgroundColor(Color.RED);
+                        } else if (user.getStatus() == 2){
+                            //img.setBackgroundColor(Color.CYAN);
+                            img.setBackgroundColor(Color.RED);
+                            final Animation animation = new AlphaAnimation(1, 0);
+                            animation.setDuration(1000);
+                            animation.setInterpolator(new LinearInterpolator());
+                            animation.setRepeatCount(Animation.INFINITE);
+                            animation.setRepeatMode(Animation.REVERSE);
+                            img.startAnimation(animation);
 
+                        }
+                    }
                 }
 
                 @Override
